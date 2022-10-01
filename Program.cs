@@ -30,6 +30,7 @@ app.MapGet("/rooms/{id}", async (int id, BookingDb db) =>
 app.MapPost("/rooms", async (Room room, BookingDb db) =>
 {
     db.Rooms.Add(room);
+    
     await db.SaveChangesAsync();
 
     return Results.Created($"/rooms/{room.id}", room);
@@ -37,7 +38,7 @@ app.MapPost("/rooms", async (Room room, BookingDb db) =>
 
 app.MapPut("/rooms/{id}", async (int id, Room inputRoom, BookingDb db) =>
 {
-    var room = await db.Rooms.FindAsync(id);
+    var room = await db.Rooms.Include(r=>r.amenities).SingleOrDefaultAsync(r=>r.id == id);
 
     if (room is null) return Results.NotFound();
 
@@ -45,11 +46,9 @@ app.MapPut("/rooms/{id}", async (int id, Room inputRoom, BookingDb db) =>
     room.adultCapacity = inputRoom.adultCapacity;
     room.childCapacity = inputRoom.childCapacity;
     room.price = inputRoom.price;
-     if (room.amenities is not null) db.Amenities.RemoveRange(room.amenities);
+    if (room.amenities != null) db.Amenities.RemoveRange(room.amenities);
     room.amenities = inputRoom.amenities;
-
-    await db.SaveChangesAsync();
-
+    db.SaveChangesAsync();
     return Results.Ok(new{status=true});
 });
 
@@ -69,12 +68,23 @@ app.MapGet("/booking", async (BookingDb db) =>
     await db.Bookings.Include(b => b.room).ToListAsync()
 );
 
+
+app.MapGet("/booking/{id}", async (int id, BookingDb db) =>
+    await db.Bookings.Include(b => b.room).SingleOrDefaultAsync(b=>b.id==id)
+        is Booking booking
+            ? Results.Ok(booking)
+            : Results.NotFound());
+
 app.MapPost("/get-rooms", async (Booking booking, BookingDb db) =>
 {
     var room = await db.Rooms.Include(r=>r.bookings).Where(r => (
         r.adultCapacity >= booking.numberOfAdults &&
         r.childCapacity >= booking.numberOfChildren &&
-        r.bookings.Where(b=>DateTime.Compare(b.checkInDate,booking.checkInDate) >-1).FirstOrDefault() == null
+        r.bookings.Where(
+            b=>
+            DateTime.Compare(b.checkInDate,booking.checkInDate) >-1
+            
+        ).FirstOrDefault() == null
         )).FirstOrDefaultAsync();
     if (room is null)
     {
@@ -99,7 +109,9 @@ app.MapPut("/booking", async (BookingStatusDM inputBooking, BookingDb db) =>
     var booking = await db.Bookings.SingleOrDefaultAsync(b => b.id == inputBooking.id);
 
     if (booking is null) return Results.NotFound();
-
+    if(inputBooking.status == "Check Out"){
+        booking.checkOutDate =  DateTime.Today;
+    }
     booking.status = inputBooking.status;
     await db.SaveChangesAsync();
 
@@ -161,33 +173,3 @@ class BookingDb : DbContext
 
     public DbSet<Booking> Bookings => Set<Booking>();
 }
-
-
-
-
-
-
-
-
-// app.MapGet("/rooms",()=>{
-//     return new Room(){
-//         id = 1,
-//         roomNUmber=101,
-//         adultCapacity=2,
-//         childCapacity=2,
-//         price=5000
-
-//     };
-// });
-
-
-// app.Run();
-
-// class Room
-// {
-//   public int id { get; set; }
-//   public int adultCapacity { get; set; }
-//   public int childCapacity { get; set; }
-//   public int roomNUmber { get; set; } 
-//   public int price { get; set; } 
-// }

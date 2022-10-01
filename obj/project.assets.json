@@ -924,19 +924,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\NANDHAGOPAL J\\.nuget\\packages\\": {}
+    "C:\\Users\\USER\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\TRAINING\\booking-backend\\booking-backend.csproj",
+      "projectUniqueName": "D:\\IONAUGHT\\HeadfittedSecondBtachtraining\\Final\\Booking-Backend\\booking-backend.csproj",
       "projectName": "booking-backend",
-      "projectPath": "D:\\TRAINING\\booking-backend\\booking-backend.csproj",
-      "packagesPath": "C:\\Users\\NANDHAGOPAL J\\.nuget\\packages\\",
-      "outputPath": "D:\\TRAINING\\booking-backend\\obj\\",
+      "projectPath": "D:\\IONAUGHT\\HeadfittedSecondBtachtraining\\Final\\Booking-Backend\\booking-backend.csproj",
+      "packagesPath": "C:\\Users\\USER\\.nuget\\packages\\",
+      "outputPath": "D:\\IONAUGHT\\HeadfittedSecondBtachtraining\\Final\\Booking-Backend\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\NANDHAGOPAL J\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\USER\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net6.0"
@@ -992,7 +992,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.401\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.400\\RuntimeIdentifierGraph.json"
       }
     }
   }
