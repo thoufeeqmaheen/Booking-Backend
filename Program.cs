@@ -75,6 +75,14 @@ app.MapGet("/booking/{id}", async (int id, BookingDb db) =>
             ? Results.Ok(booking)
             : Results.NotFound());
 
+app.MapGet("/booking/today-check-in", async (BookingDb db) =>
+    await db.Bookings.Where(b=>b.checkInDate == DateTime.Today).Include(b => b.room).ToListAsync()
+);
+
+app.MapGet("/booking/today-check-out", async (BookingDb db) =>
+    await db.Bookings.Where(b=>b.checkOutDate == DateTime.Today).Include(b => b.room).ToListAsync()
+);
+
 app.MapPost("/get-rooms", async (Booking booking, BookingDb db) =>
 {
     var room = await db.Rooms.Include(r=>r.bookings).Where(r => (
